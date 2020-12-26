@@ -41,6 +41,8 @@ class window(QMainWindow):
 		self.ui.lineEdit.setText('')
 		self.ui.spinBox.setValue(1)
 		self.ui.spinBox_2.setValue(0)
+		self.ui.comboBox.clear()
+		self.ui.comboBox.addItems(["AM","PM"])
 	
 	def dispEvent(self):
 		eventlist = ""
