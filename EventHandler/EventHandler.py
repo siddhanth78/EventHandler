@@ -33,6 +33,8 @@ class window(QMainWindow):
 		self.ui.pushButton.clicked.connect(self.addEvent)
 		
 		self.ui.tabWidget.currentChanged.connect(self.clear)
+		
+		self.ui.listWidget.itemClicked.connect(self.deleteItem)
 	
 	def clear(self):
 		self.ui.label_5.setText('')
@@ -75,6 +77,34 @@ class window(QMainWindow):
 		window.allevents.to_csv(os.getcwd()+"\\AllEvents.csv",index=False)
 		window.allevents = pd.read_csv(os.getcwd()+"\\AllEvents.csv")
 		self.ui.label_5.setText("New event added.")
+		
+	def deleteItem(self):
+		msg = QMessageBox()
+		msg.setIcon(QMessageBox.Question)
+		msg.setText("Do you want to delete this entry?")
+		msg.setWindowTitle("Delete event")
+		msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+		msg.buttonClicked.connect(self.confirmation)
+		
+		btn = msg.exec_()
+		
+		date = QDate(self.ui.calendarWidget.selectedDate())
+		Date = date.toString()
+		listevents = self.ui.listWidget.currentItem().text().split("-")
+		eventt = listevents[1].strip()
+		if btn == QMessageBox.Ok:
+			df = window.allevents
+			df_new = df.drop(df[(df['date'] == Date) & (df['event'] == eventt)].index)
+			window.allevents = df_new
+			window.allevents.to_csv(os.getcwd()+"\\AllEvents.csv",index=False)
+			window.allevents = pd.read_csv(os.getcwd()+"\\AllEvents.csv")
+			self.dispEvent()
+		else:
+			return
+		
+	def confirmation(self,btn):
+		pass
+		
 	
 	def refreshEvents(self):
 		self.dispEvent()
