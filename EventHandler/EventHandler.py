@@ -64,6 +64,7 @@ class window(QMainWindow):
 		date = QDate(self.ui.calendarWidget.selectedDate())
 		Date = date.toString()
 		eventdescrp = self.ui.lineEdit.text()
+		eventdescrp = eventdescrp.strip()
 		if eventdescrp.strip()=='':
 			self.ui.label_5.setText("Description required.")
 			return
@@ -73,6 +74,7 @@ class window(QMainWindow):
 		if len(minutes)==1:
 			minutes = "0"+minutes
 		time = hour+":"+minutes
+		time = time.strip()
 		window.allevents.loc[len(window.allevents.index)] = [Date,f"{time} {timeofday}",eventdescrp]
 		window.allevents.to_csv(os.getcwd()+"\\AllEvents.csv",index=False)
 		window.allevents = pd.read_csv(os.getcwd()+"\\AllEvents.csv")
@@ -92,9 +94,10 @@ class window(QMainWindow):
 		Date = date.toString()
 		listevents = self.ui.listWidget.currentItem().text().split("-")
 		eventt = listevents[1].strip()
+		timee = listevents[0].strip()
 		if btn == QMessageBox.Ok:
 			df = window.allevents
-			df_new = df.drop(df[(df['date'] == Date) & (df['event'] == eventt)].index)
+			df_new = df.drop(df[(df['date'] == Date) & (df['event'] == eventt) & (df['time'] == timee)].index)
 			window.allevents = df_new
 			window.allevents.to_csv(os.getcwd()+"\\AllEvents.csv",index=False)
 			window.allevents = pd.read_csv(os.getcwd()+"\\AllEvents.csv")
